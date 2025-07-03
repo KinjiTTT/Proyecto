@@ -19,7 +19,7 @@ public class Conexion {
 	         respuesta = "conectado";
 	         //conn.close();
 	     } catch (SQLException e) {
-	    	 respuesta = "error";
+	    	 respuesta = "Error de conexion a la base de datos";
 	         e.printStackTrace();
 	     }
 		return respuesta;

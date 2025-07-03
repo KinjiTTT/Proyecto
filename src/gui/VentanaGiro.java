@@ -44,6 +44,7 @@ public class VentanaGiro extends JFrame implements ActionListener {
 	private JLabel lblMonto;
 	private JLabel lblMetodoYCodigo;
 	private JTextField txtCodigo;
+	private JButton btnRetirar;
 
 	/**
 	 * Launch the application.
@@ -164,12 +165,6 @@ public class VentanaGiro extends JFrame implements ActionListener {
 		txtCodigo.setVisible(false);
 		contentPane.add(txtCodigo);
 		
-		btnEnviar = new JButton("Enviar");
-		btnEnviar.setBounds(544, 329, 132, 74);
-		btnEnviar.addActionListener(this);
-		btnEnviar.setVisible(false);
-		contentPane.add(btnEnviar);
-		
 		cbxOperacion = new JComboBox();
 		cbxOperacion.setModel(new DefaultComboBoxModel(new String[] {"", "Realizar Giro", "Recibir Giro"}));
 		cbxOperacion.setBounds(234, 103, 300, 30);
@@ -181,6 +176,20 @@ public class VentanaGiro extends JFrame implements ActionListener {
 		cbxMetodoPago.setBounds(234, 373, 300, 30);
 		cbxMetodoPago.setVisible(false);
 		contentPane.add(cbxMetodoPago);
+		
+		btnEnviar = new JButton("Enviar");
+		btnEnviar.setFont(new Font("Microsoft JhengHei Light", Font.BOLD, 20));
+		btnEnviar.setBounds(544, 329, 132, 74);
+		btnEnviar.addActionListener(this);
+		btnEnviar.setVisible(false);
+		contentPane.add(btnEnviar);
+		
+		btnRetirar = new JButton("Retirar");
+		btnRetirar.setFont(new Font("Microsoft JhengHei Light", Font.BOLD, 20));
+		btnRetirar.addActionListener(this);
+		btnRetirar.setBounds(544, 329, 132, 74);
+		btnRetirar.setVisible(false);
+		contentPane.add(btnRetirar);
 	}
 
 	@Override
@@ -205,6 +214,7 @@ public class VentanaGiro extends JFrame implements ActionListener {
 			cbxMetodoPago.setVisible(true);
 			
 			btnEnviar.setVisible(true);
+			btnRetirar.setVisible(false);
 		}
 		else if(cbxOperacion.getSelectedItem().toString().equals("Recibir Giro"))
 		{
@@ -226,6 +236,7 @@ public class VentanaGiro extends JFrame implements ActionListener {
 			cbxMetodoPago.setVisible(false);
 			
 			btnEnviar.setVisible(false);
+			btnRetirar.setVisible(true);
 		}
 		else
 		{
@@ -243,6 +254,7 @@ public class VentanaGiro extends JFrame implements ActionListener {
 			cbxMetodoPago.setVisible(false);
 			
 			btnEnviar.setVisible(false);
+			btnRetirar.setVisible(false);
 		}
 		
 		if(arg0.getSource() == btnEnviar)
@@ -288,6 +300,42 @@ public class VentanaGiro extends JFrame implements ActionListener {
 			{
 				System.out.println("Error"); e.printStackTrace();
 			}
+			
+		}
+		
+		if(arg0.getSource() == btnRetirar)
+		{
+			String numDestino = txtNumeroDestino.getText();
+			String numRemitente = txtNumeroRemitente.getText();
+			String cedRemitente = txtCedulaRemitente.getText();
+			String codSeguridad = txtCodigo.getText();
+			try {
+				if (numDestino.isEmpty() || numRemitente.isEmpty() || cedRemitente.isEmpty() || codSeguridad.isEmpty() ) {
+		            JOptionPane.showMessageDialog(this, "Complete todos los campos.");
+		            return;
+		        }
+				
+				BigDecimal monto = new BigDecimal(txtMonto.getText());
+				
+				Giro giro = new Giro();
+				giro.setOperacion(cbxOperacion.getSelectedItem().toString());
+				giro.setNumeroDestino(numDestino);
+				giro.setNumeroRemitente(numRemitente);
+				giro.setCedulaRemitente(cedRemitente);
+				giro.setMontoGiro(monto);
+				giro.setCodigoSeguridad(codSeguridad);
+				
+				giroDAO.retirarGiro(giro);
+			} catch (NumberFormatException e)
+			{
+				JOptionPane.showMessageDialog(this, "Monto no valido");
+				
+			} catch (SQLException e)
+			{
+				System.out.println("Error"); e.printStackTrace();
+			}
+			
+			
 			
 		}
 		

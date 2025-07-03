@@ -6,6 +6,7 @@ import java.awt.Font;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -19,16 +20,18 @@ import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class VentanaRecarga extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtMontoARecargar;
-	private JTextField txtCompania;
-	private JTextField txtNumero;
+	private JTextField txtNumeroDeTelefono;
 	private JLabel lblNewLabel;
 	private JButton btnCargar;
+	private JComboBox cbxCompaniaTelefonica;
 
 	/**
 	 * Launch the application.
@@ -76,14 +79,14 @@ public class VentanaRecarga extends JFrame implements ActionListener {
 		JLabel lblCompaniaTelefonica = new JLabel("Compania Telefonica");
 		lblCompaniaTelefonica.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblCompaniaTelefonica.setFont(new Font("Microsoft JhengHei Light", Font.BOLD, 20));
-		lblCompaniaTelefonica.setBounds(10, 184, 214, 47);
+		lblCompaniaTelefonica.setBounds(10, 139, 214, 47);
 		contentPane.add(lblCompaniaTelefonica);
 		
-		JLabel lblNumero = new JLabel("Numero de Telefono");
-		lblNumero.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNumero.setFont(new Font("Microsoft JhengHei Light", Font.BOLD, 20));
-		lblNumero.setBounds(10, 139, 214, 47);
-		contentPane.add(lblNumero);
+		JLabel lblNumeroDeTelefono = new JLabel("Numero de Telefono");
+		lblNumeroDeTelefono.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNumeroDeTelefono.setFont(new Font("Microsoft JhengHei Light", Font.BOLD, 20));
+		lblNumeroDeTelefono.setBounds(10, 184, 214, 47);
+		contentPane.add(lblNumeroDeTelefono);
 		
 		JLabel lblMonto = new JLabel("Monto a Recargar");
 		lblMonto.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -97,17 +100,11 @@ public class VentanaRecarga extends JFrame implements ActionListener {
 		txtMontoARecargar.setBounds(234, 238, 300, 30);
 		contentPane.add(txtMontoARecargar);
 		
-		txtCompania = new JTextField();
-		txtCompania.setFont(new Font("Microsoft JhengHei UI", Font.PLAIN, 18));
-		txtCompania.setColumns(10);
-		txtCompania.setBounds(234, 193, 300, 30);
-		contentPane.add(txtCompania);
-		
-		txtNumero = new JTextField();
-		txtNumero.setFont(new Font("Microsoft JhengHei UI", Font.PLAIN, 18));
-		txtNumero.setColumns(10);
-		txtNumero.setBounds(234, 148, 300, 30);
-		contentPane.add(txtNumero);
+		txtNumeroDeTelefono = new JTextField();
+		txtNumeroDeTelefono.setFont(new Font("Microsoft JhengHei UI", Font.PLAIN, 18));
+		txtNumeroDeTelefono.setColumns(10);
+		txtNumeroDeTelefono.setBounds(234, 193, 300, 30);
+		contentPane.add(txtNumeroDeTelefono);
 		
 		lblNewLabel = new JLabel("Datos del receptor");
 		lblNewLabel.setFont(new Font("Microsoft JhengHei Light", Font.BOLD, 20));
@@ -119,6 +116,11 @@ public class VentanaRecarga extends JFrame implements ActionListener {
 		btnCargar.setFont(new Font("Microsoft JhengHei Light", Font.BOLD, 20));
 		btnCargar.setBounds(66, 366, 158, 49);
 		contentPane.add(btnCargar);
+		
+		cbxCompaniaTelefonica = new JComboBox();
+		cbxCompaniaTelefonica.setModel(new DefaultComboBoxModel(new String[] {"", "Personal", "Tigo", "Claro"}));
+		cbxCompaniaTelefonica.setBounds(234, 148, 300, 30);
+		contentPane.add(cbxCompaniaTelefonica);
 		
 	}
 
@@ -133,16 +135,28 @@ public class VentanaRecarga extends JFrame implements ActionListener {
 
 	private void cargarSaldo() {
 		Recarga nuevarecarga = new Recarga();
-		nuevarecarga.setNumeroDeTelefono(txtNumero.getText());
-		nuevarecarga.setCompaniaTelefonica(Integer.parseInt(txtCompania.getText()));
-		nuevarecarga.setMontoRecarga(new BigDecimal(txtMontoARecargar.getText()));
-		RecargaDAO recargaDAO = new RecargaDAO();
+		//Almacenamos los datos ingresados en variables para que sea mas legible
+		String compTelefonica = cbxCompaniaTelefonica.getSelectedItem().toString();
+		String numTelefono = txtNumeroDeTelefono.getText();
+		
 		try {
+			if (numTelefono.isEmpty() || compTelefonica.equals("")) {
+	            JOptionPane.showMessageDialog(this, "Complete todos los campos.");
+	            return;
+	        }
+			BigDecimal montoRecarga = new BigDecimal(txtMontoARecargar.getText());
+			nuevarecarga.setCompaniaTelefonica(compTelefonica);
+			nuevarecarga.setNumeroDeTelefono(numTelefono);
+			nuevarecarga.setMontoRecarga(montoRecarga);
+			RecargaDAO recargaDAO = new RecargaDAO();
 			recargaDAO.registrarRecarga(nuevarecarga);
+			
+		} catch (NumberFormatException e) {
+			JOptionPane.showMessageDialog(this, "Monto no valido");
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
 }

@@ -32,35 +32,35 @@ public class RecargaDAO {
 		return resultado;
 	}
 	
-	public String registrarRecarga(Recarga nuevarecarga) throws SQLException
+	public void registrarRecarga(Recarga nuevarecarga) throws SQLException
 	{
-		String resultado = "";
+		//String resultado = "";
 		
 		if(!conectar().equals("conectado"))
 		{
-			return "Error";
+			//return "Error";
 		}
-		String cargar = "INSERT INTO recarga (codigo,numeroDeTelefono,companiaTelefonica,montoRecarga)" + "  VALUES (?,?,?,?)";
+		String cargar = "INSERT INTO recarga (companiaTelefonica,numeroDeTelefono,montoRecarga)" + "  VALUES (?,?,?)";
 		
 		try {
 			preStatement = connection.prepareStatement(cargar);
-			preStatement.setInt(1, nuevarecarga.getCodigo());
-			preStatement.setString(2, nuevarecarga.getNumeroDeTelefono());
-			preStatement.setInt(3,nuevarecarga.getCompaniaTelefonica());
-			preStatement.setBigDecimal(4,nuevarecarga.getMontoRecarga());
+			//preStatement.setInt(1, nuevarecarga.getCodigo()); //No es necesario porque es un serial en la base de datos
+			preStatement.setString(1, nuevarecarga.getCompaniaTelefonica());
+			preStatement.setString(2,nuevarecarga.getNumeroDeTelefono());
+			preStatement.setBigDecimal(3,nuevarecarga.getMontoRecarga());
 			preStatement.execute();
 
-			resultado = "ok";
+			//resultado = "ok";
 		
 		}catch (SQLException e) {
 			System.out.println("No se pudo realizar la recarga, verifique los datos ingresados: " + e.getMessage());
 			//e.printStackTrace();
-			resultado = "error";
+			//resultado = "error";
 		}
 		catch (Exception e) {
 			System.out.println("No se pudo cargar saldo: " + e.getMessage());
 			//e.printStackTrace();
-			resultado = "error";
+			//resultado = "error";
 		}
 		finally {
 			preStatement.close();
@@ -68,7 +68,7 @@ public class RecargaDAO {
 			conexion.desconectar();
 		}
 		
-		return resultado;
+		//return resultado;
 	}
 	
 	public Recarga consultarRecarga(String documento)

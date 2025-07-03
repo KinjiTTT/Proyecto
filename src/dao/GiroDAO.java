@@ -77,6 +77,41 @@ public class GiroDAO {
 		//return resultado;
 	}
 	
+	public void retirarGiro(Giro giro) throws SQLException{
+		
+		if(!conectar().equals("conectado"))
+		{
+			//return "Error";
+			System.out.println("Error de Conexion a la Base de Datos");
+		}
+		
+		
+		String retirar = "SELECT operacion, numerodestino, numeroremitente, cedularemitente, monto, metodopago, codigoseguridad "
+				+ "FROM giro WHERE numerodestino = "+ giro.getNumeroDestino();
+		
+		try {
+		preStatement = connection.prepareStatement(retirar); //busca una coincidencia de algun numero destino en la base de datos
+		//por completar
+		
+		
+		
+		
+		} catch (SQLException e) {
+			System.out.println("No se pudo retirar el giro, verifique los datos ingresados: " + e.getMessage());
+			//e.printStackTrace();
+			
+		} catch (Exception e) {
+			System.out.println("No se pudo retirar el giro: " + e.getMessage());
+			//e.printStackTrace();
+			
+		} finally {
+			preStatement.close();
+			connection.close();
+			conexion.desconectar();
+		
+		}
+	}
+	
 	public Giro consultarGiro(String documento)
 	{
 		return new Giro();
