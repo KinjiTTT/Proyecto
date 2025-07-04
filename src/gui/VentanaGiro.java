@@ -332,7 +332,7 @@ public class VentanaGiro extends JFrame implements ActionListener {
 				
 			} catch (SQLException e)
 			{
-				System.out.println("Error"); e.printStackTrace();
+				System.out.println("Error del tipo SQL: "); e.printStackTrace();
 			}
 			
 			
